@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHÓM 1 — Đặc tả Yêu cầu Phần mềm (SRS) | Dự án MotoGo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: {
+                            DEFAULT: '#050608',
+                            elevated: '#0b0d12',
+                            card: '#12151e'
+                        },
+                        champagne: {
+                            DEFAULT: '#d4af37',
+                            light: '#f5d78e',
+                            mid: '#e5b869',
+                            dark: '#9a7826'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #07090e;
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.09) 0%, transparent 60%),
+                radial-gradient(circle at 90% 90%, rgba(212, 175, 55, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 10% 90%, rgba(148, 163, 184, 0.03) 0%, transparent 40%),
+                linear-gradient(180deg, #090c12 0%, #050608 100%);
+            background-attachment: fixed;
+        }
+
+        /* Subtle Luxury Vignette */
+        .stage-vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 50% 50%, transparent 65%, rgba(5, 6, 8, 0.75) 100%),
+                linear-gradient(180deg, rgba(5, 6, 8, 0.7) 0%, transparent 12%, transparent 88%, rgba(5, 6, 8, 0.85) 100%);
+        }
+
+        /* Clean Executive Panels (No visual clutter, no nested border noise) */
+        .lux-panel {
+            background: rgba(15, 18, 26, 0.78);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.75);
+        }
+
+        .lux-card {
+            background: rgba(22, 26, 38, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lux-card:hover {
+            border-color: rgba(212, 175, 55, 0.35);
+            background: rgba(28, 33, 48, 0.82);
+            transform: translateY(-2px);
+        }
+
+        .lux-card-active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(20, 24, 35, 0.95) 100%) !important;
+            border-color: rgba(245, 215, 142, 0.6) !important;
+            box-shadow: 0 10px 25px -8px rgba(212, 175, 55, 0.25);
+        }
+
+        /* Metallic Text Gradients */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff9e6 0%, #f5d78e 45%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .platinum-gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 55%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Badges */
+        .gold-badge {
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: #f5d78e;
+        }
+
+        .platinum-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #e2e8f0;
+        }
+
+        /* Slide Viewport & Transition */
+        .slides-viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        .slide-section {
+            position: absolute;
+            inset: 0;
+            padding: 5rem 3rem 2.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            overflow-y: auto;
+            transform: translate3d(0, 14px, 0);
+            transition:
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide-section.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.35);
+            border-radius: 9999px;
+        }
+
+        @media (max-width: 1024px) {
+            .slide-section {
+                padding: 4.5rem 1.5rem 2rem 1.5rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LUXURY ATMOSPHERIC AMBIENCE -->
+    <div class="stage-vignette"></div>
+
+    <!-- TOP PROGRESS BAR -->
+    <div class="fixed top-0 left-0 right-0 h-[2px] bg-white/5 z-40">
+        <div id="top-progress-bar" class="h-full bg-gradient-to-r from-[#9a7826] via-[#d4af37] to-[#fff9e6] transition-all duration-500" style="width: 10%;"></div>
+    </div>
+
+    <!-- MINIMALIST FIXED HEADER WITH EMBEDDED CONTROLS -->
+    <header class="fixed top-0 left-0 right-0 h-16 px-6 lg:px-12 flex items-center justify-between z-30 pointer-events-none bg-gradient-to-b from-[#050608]/90 via-[#050608]/60 to-transparent backdrop-blur-md">
+        <div class="flex items-center gap-3 pointer-events-auto">
+            <div class="px-3 py-1 rounded-full gold-badge flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#f5d78e]"></span>
+                <span class="font-display text-xs font-bold tracking-[0.2em] text-[#f5d78e] uppercase">NHÓM 1</span>
+            </div>
+            <span class="text-white/20 font-mono text-sm">//</span>
+            <span class="font-display font-semibold tracking-[0.18em] text-sm text-slate-200 uppercase">MOTOGO SRS</span>
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-4 pointer-events-auto">
+            <span id="header-section-label" class="text-sm text-slate-300 font-medium tracking-wide hidden lg:inline">01 • Trang bìa & Tổng quan Dự án</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#d4af37] hidden lg:inline"></span>
+            <span id="header-slide-counter" class="font-mono text-sm text-[#f5d78e] font-semibold px-2.5 py-0.5 rounded-md bg-white/5">01 / 10</span>
+
+            <div class="flex items-center gap-1.5 ml-1 border-l border-white/15 pl-3">
+                <button onclick="prevSlide()" title="Slide trước (← / PageUp)" class="w-8 h-8 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center transition border border-white/10">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="nextSlide()" title="Slide tiếp theo (→ / Space)" class="w-8 h-8 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center transition border border-white/10">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+                <button onclick="toggleOverviewModal()" title="Mở mục lục 10 Slide (Phím O)" class="px-3 py-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-[#f5d78e] text-xs font-mono flex items-center gap-1.5 transition border border-white/10">
+                    <i class="fa-solid fa-grip text-xs text-[#e5b869]"></i>
+                    <span class="hidden sm:inline font-medium">Mục lục (O)</span>
+                </button>
+                <button onclick="toggleFullScreen()" title="Toàn màn hình (Phím F)" class="w-8 h-8 rounded-lg hover:bg-white/10 text-slate-300 hover:text-[#f5d78e] flex items-center justify-center transition border border-white/10">
+                    <i class="fa-solid fa-expand text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SLIDE OVERVIEW MODAL (KEY 'O') -->
+    <div id="overview-modal" class="fixed inset-0 z-50 bg-[#050608]/92 backdrop-blur-2xl hidden items-center justify-center p-6">
+        <div class="w-full max-w-6xl lux-panel rounded-3xl p-6 sm:p-8 space-y-5">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <span class="text-xs sm:text-sm font-mono uppercase tracking-[0.22em] text-[#f5d78e] font-semibold">NHÓM 1 // MỤC LỤC ĐIỀU HƯỚNG SLIDE</span>
+                    <h3 class="font-display text-2xl sm:text-3xl font-bold text-white mt-1">Tài liệu Đặc tả Yêu cầu Phần mềm (SRS) — Dự án MotoGo</h3>
+                </div>
+                <button onclick="toggleOverviewModal(false)" class="px-4 py-2 rounded-full gold-badge text-sm font-mono hover:bg-[#d4af37]/25 transition">
+                    Đóng (O / Esc)
+                </button>
+            </div>
+            <div id="overview-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- CENTERED FULL-SCREEN KEYNOTE SLIDES (10 RESTRUCTURED CLEAN SLIDES)      -->
+    <!-- ======================================================================= -->
+    <main class="slides-viewport">
+
+        <!-- ==================== SLIDE 01: TRANG BÌA ==================== -->
+        <section class="slide-section active" data-slide="0" data-label="01 • Trang bìa & Tổng quan Dự án (Mục 1.1 & 1.2)">
+            <div class="w-full max-w-6xl mx-auto flex flex-col items-center text-center space-y-7 my-auto">
+                <div class="inline-flex items-center gap-3 px-5 py-1.5 rounded-full gold-badge">
+                    <span class="w-2 h-2 rounded-full bg-[#f5d78e]"></span>
+                    <span class="text-xs sm:text-sm font-mono uppercase tracking-[0.24em] font-medium">BÁO CÁO THUYẾT TRÌNH NHÓM 1 • TÀI LIỆU ĐẶC TẢ YÊU CẦU PHẦN MỀM (SRS)</span>
+                </div>
+
+                <div class="space-y-3 max-w-4xl">
+                    <h1 class="font-display text-7xl sm:text-8xl lg:text-9xl font-extrabold tracking-tight leading-none">
+                        <span class="platinum-gradient-text">MOTO</span><span class="gold-gradient-text">GO</span>
+                    </h1>
+                    <p class="font-display text-2xl sm:text-3xl font-light text-slate-100 tracking-wide pt-1">
+                        Nền tảng trung gian kết nối <span class="text-[#f5d78e] font-normal">cho thuê xe máy tự lái</span> tại các thành phố du lịch
+                    </p>
+                </div>
+
+              
+
+                <!-- 4 Pillars of Project (Clean horizontal strip) -->
+                <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3 text-left">
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37]">
+                        <div class="text-xs font-mono uppercase text-slate-400 font-medium">Thị trường khởi điểm</div>
+                        <div class="font-display text-2xl font-bold text-white mt-1.5">Vũng Tàu &amp; Đà Nẵng</div>
+                        <p class="text-sm text-slate-300 mt-1.5 font-light">Mục tiêu ≥ 30 cửa hàng &amp; 400 xe vận hành 6 tháng đầu.</p>
+                    </div>
+
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37]">
+                        <div class="text-xs font-mono uppercase text-slate-400 font-medium">Kế hoạch triển khai</div>
+                        <div class="font-display text-2xl font-bold text-[#f5d78e] mt-1.5">5 Sprints (10 Tuần)</div>
+                        <p class="text-sm text-slate-300 mt-1.5 font-light">Khung quy trình Scrum chuẩn (2 tuần / Sprint).</p>
+                    </div>
+
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37]">
+                        <div class="text-xs font-mono uppercase text-slate-400 font-medium">Quy mô chức năng</div>
+                        <div class="font-display text-2xl font-bold text-white mt-1.5">9 Modules • 40 FRs</div>
+                        <p class="text-sm text-slate-300 mt-1.5 font-light">Mã hóa FR-01 → FR-40 phục vụ Product Backlog.</p>
+                    </div>
+
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37]">
+                        <div class="text-xs font-mono uppercase text-slate-400 font-medium">Ràng buộc nghiệp vụ</div>
+                        <div class="font-display text-2xl font-bold text-[#f5d78e] mt-1.5">10 Business Rules</div>
+                        <p class="text-sm text-slate-300 mt-1.5 font-light">Chuẩn hóa chính sách cọc, hủy đơn, trả trễ &amp; buffer.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 02: BỐI CẢNH & NỖI ĐAU THỊ TRƯỜNG ==================== -->
+        <section class="slide-section" data-slide="1" data-label="02 • Bối cảnh Nghiệp vụ & Số liệu Khảo sát (Mục 2.1 & 7.2)">
+            <div class="w-full max-w-6xl mx-auto space-y-6 my-auto">
+                <div class="border-b border-white/10 pb-3">
+                    <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">02 / BỐI CẢNH &amp; THỰC TRẠNG NGHIỆP VỤ (MỤC 2.1 &amp; 7.2)</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">Bất cập của Quy trình Thuê Xe Thủ công Hiện tại</h2>
+                </div>
+
+                <!-- 2-Column Balanced Master-Detail Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                    
+                    <!-- Left: 4 Survey Benchmarks (42%) -->
+                    <div class="lg:col-span-5 lux-panel rounded-3xl p-6 flex flex-col justify-between border-l-4 border-l-[#d4af37]">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <span class="font-display text-lg font-bold text-white">Khảo sát Thực tế (Mục 7.2)</span>
+                                <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs">Benchmark</span>
+                            </div>
+                            
+                            <div class="space-y-4 mt-5">
+                                <div class="flex items-start gap-4">
+                                    <div class="font-display text-4xl font-extrabold text-[#f5d78e] w-24 shrink-0">47'</div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-white">Thời gian chốt đơn trung bình</div>
+                                        <p class="text-sm text-slate-300 font-light mt-0.5 leading-relaxed">Từ lúc khách hỏi qua MXH đến khi cửa hàng xác nhận xe.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-4">
+                                    <div class="font-display text-4xl font-extrabold gold-gradient-text w-24 shrink-0">72%</div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-white">Yếu tố quyết định đặt xe</div>
+                                        <p class="text-sm text-slate-300 font-light mt-0.5 leading-relaxed">Khách khẳng định phải biết chắc chắn xe còn trống đúng ngày.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-4">
+                                    <div class="font-display text-4xl font-extrabold text-white w-24 shrink-0">64%</div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-white">E ngại thủ tục giấy tờ</div>
+                                        <p class="text-sm text-slate-300 font-light mt-0.5 leading-relaxed">Khách lo sợ khi cửa hàng giữ lại CCCD/hộ chiếu bản gốc.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-4">
+                                    <div class="font-display text-4xl font-extrabold gold-gradient-text w-24 shrink-0">58%</div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-white">Rủi ro trùng lịch (Overbooking)</div>
+                                        <p class="text-sm text-slate-300 font-light mt-0.5 leading-relaxed">Cửa hàng từng nhận trùng 2 đơn cùng giờ trong 3 tháng qua.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-white/10 text-xs font-mono text-slate-400">
+                            Phương thức cũ: Tìm SĐT qua MXH • Quản lý Sổ tay / Excel rời rạc
+                        </div>
+                    </div>
+
+                    <!-- Right: 5 Core Pain Points (58%) -->
+                    <div class="lg:col-span-7 lux-panel rounded-3xl p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <span class="font-display text-lg font-bold text-white">5 Bất cập Cốt lõi Cần Giải quyết (Mục 2.1)</span>
+                                <span class="text-xs font-mono text-slate-400">Pain Points</span>
+                            </div>
+
+                            <div class="space-y-3 mt-4">
+                                <div class="lux-card rounded-2xl p-4 flex items-start gap-3.5">
+                                    <span class="w-8 h-8 rounded-xl gold-badge flex items-center justify-center font-mono text-xs font-bold shrink-0">01</span>
+                                    <div>
+                                        <div class="text-base font-bold text-white">Mù thông tin xe trống thời gian thực</div>
+                                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Khách không biết xe còn hay hết, mất từ <b class="text-white font-semibold">15 phút đến vài giờ</b> chờ cửa hàng phản hồi thủ công.</p>
+                                    </div>
+                                </div>
+
+                                <div class="lux-card rounded-2xl p-4 flex items-start gap-3.5">
+                                    <span class="w-8 h-8 rounded-xl gold-badge flex items-center justify-center font-mono text-xs font-bold shrink-0">02</span>
+                                    <div>
+                                        <div class="text-base font-bold text-white">Giá báo miệng &amp; thiếu nhất quán</div>
+                                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Giá thuê thay đổi tùy tiện giữa các lần hỏi, không minh bạch chính sách phụ phí dịp lễ/cuối tuần.</p>
+                                    </div>
+                                </div>
+
+                                <div class="lux-card rounded-2xl p-4 flex items-start gap-3.5">
+                                    <span class="w-8 h-8 rounded-xl gold-badge flex items-center justify-center font-mono text-xs font-bold shrink-0">03</span>
+                                    <div>
+                                        <div class="text-base font-bold text-white">Trùng lịch thuê xe (Overbooking)</div>
+                                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Ghi chép bằng sổ sách hoặc file Excel rời rạc dẫn đến nhận trùng đơn, gây hủy đơn phút chót.</p>
+                                    </div>
+                                </div>
+
+                                <div class="lux-card rounded-2xl p-4 flex items-start gap-3.5">
+                                    <span class="w-8 h-8 rounded-xl gold-badge flex items-center justify-center font-mono text-xs font-bold shrink-0">04</span>
+                                    <div>
+                                        <div class="text-base font-bold text-white">Tranh chấp vết trầy xước khi trả xe</div>
+                                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Không có bằng chứng ảnh chuẩn lúc bàn giao dẫn đến cãi vã, đổ lỗi về hư hại có sẵn từ trước.</p>
+                                    </div>
+                                </div>
+
+                                <div class="lux-card rounded-2xl p-4 flex items-start gap-3.5">
+                                    <span class="w-8 h-8 rounded-xl gold-badge flex items-center justify-center font-mono text-xs font-bold shrink-0">05</span>
+                                    <div>
+                                        <div class="text-base font-bold text-white">Rào cản giữ giấy tờ tùy thân gốc</div>
+                                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Cửa hàng giữ CCCD/Hộ chiếu làm tin khiến khách e ngại mất giấy tờ trong chuyến du lịch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 03: MỤC TIÊU KINH DOANH MVP ==================== -->
+        <section class="slide-section" data-slide="2" data-label="03 • Mục tiêu Kinh doanh MVP & Giả định Ràng buộc (Mục 1.2 & 2.3)">
+            <div class="w-full max-w-6xl mx-auto space-y-6 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">03 / ĐỊNH HƯỚNG PHÁT TRIỂN &amp; PHẠM VI MVP</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">3 Mục tiêu Kinh doanh (1.2) &amp; 5 Ràng buộc Triển khai (2.3)</h2>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">Thống nhất định hướng Product Backlog</span>
+                </div>
+
+                <!-- 3 Quantitative Business Goals -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="lux-panel rounded-3xl p-6 border-t-4 border-t-[#d4af37] flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono uppercase text-[#f5d78e] font-semibold">Mục tiêu 01 • Độ phủ thị trường</span>
+                                <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs">6 Tháng đầu</span>
+                            </div>
+                            <div class="font-display text-4xl sm:text-5xl font-extrabold text-white mt-3">≥ 30 CH</div>
+                            <div class="font-display text-2xl font-semibold text-[#f5d78e] mt-1">&amp; 400 Xe máy vận hành</div>
+                        </div>
+                        <p class="text-sm text-slate-300 mt-4 font-light leading-relaxed border-t border-white/10 pt-3">
+                            Tập trung triển khai thực tế tại 2 thành phố du lịch trọng điểm: <b class="text-white font-semibold">Vũng Tàu</b> &amp; <b class="text-white font-semibold">Đà Nẵng</b>.
+                        </p>
+                    </div>
+
+                    <div class="lux-panel rounded-3xl p-6 border-t-4 border-t-[#d4af37] flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono uppercase text-[#f5d78e] font-semibold">Mục tiêu 02 • Tốc độ chuyển đổi</span>
+                                <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs">Từ 47 phút</span>
+                            </div>
+                            <div class="font-display text-4xl sm:text-5xl font-extrabold gold-gradient-text mt-3">&lt; 5 Phút</div>
+                            <div class="font-display text-2xl font-semibold text-white mt-1">Từ tìm xe đến đặt cọc xong</div>
+                        </div>
+                        <p class="text-sm text-slate-300 mt-4 font-light leading-relaxed border-t border-white/10 pt-3">
+                            Tối ưu trải nghiệm luồng thuê xe trên mobile hoàn tất trong <b class="text-white font-semibold">không quá 5 bước thao tác</b>.
+                        </p>
+                    </div>
+
+                    <div class="lux-panel rounded-3xl p-6 border-t-4 border-t-[#d4af37] flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono uppercase text-[#f5d78e] font-semibold">Mục tiêu 03 • Kiểm soát rủi ro</span>
+                                <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs">Bàn giao minh bạch</span>
+                            </div>
+                            <div class="font-display text-4xl sm:text-5xl font-extrabold text-white mt-3">&lt; 3% Đơn</div>
+                            <div class="font-display text-2xl font-semibold text-[#f5d78e] mt-1">Tỷ lệ phát sinh tranh chấp</div>
+                        </div>
+                        <p class="text-sm text-slate-300 mt-4 font-light leading-relaxed border-t border-white/10 pt-3">
+                            Bắt buộc biên bản số hóa <b class="text-white font-semibold">tối thiểu 6 ảnh chuẩn</b> kèm chữ ký điện tử hai bên lúc giao &amp; nhận.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5 Assumptions & Constraints (Horizontal Card Row) -->
+                <div class="lux-panel rounded-3xl p-5 sm:p-6">
+                    <div class="text-xs font-mono uppercase tracking-widest text-[#f5d78e] font-semibold mb-3">5 Giả định &amp; Ràng buộc Kỹ thuật Phiên bản MVP (Mục 2.3)</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                        <div class="lux-card rounded-2xl p-3.5">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">01 • Web Responsive</div>
+                            <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">Ưu tiên trải nghiệm mobile web; chưa làm app di động riêng trong MVP.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-3.5">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">02 • Cổng thanh toán 3rd</div>
+                            <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">Tích hợp cổng nội địa; hệ thống <b class="text-white">không tự lưu thông tin thẻ</b>.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-3.5">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">03 • Duyệt GPLX thủ công</div>
+                            <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">Vận hành viên đối chiếu ảnh chụp GPLX, chưa tích hợp eKYC tự động.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-3.5">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">04 • Ngôn ngữ hiển thị</div>
+                            <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">Chỉ hỗ trợ <b class="text-white">Tiếng Việt</b> trong giai đoạn MVP; tiếng Anh ở pha sau.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-3.5">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">05 • Khung Scrum 10 tuần</div>
+                            <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">Triển khai trong <b class="text-white">5 Sprints</b>, mỗi Sprint chuẩn 2 tuần.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 04: 5 NHÓM NGƯỜI DÙNG ==================== -->
+        <section class="slide-section" data-slide="3" data-label="04 • 5 Nhóm Người dùng Hệ sinh thái (Mục 2.2)">
+            <div class="w-full max-w-6xl mx-auto space-y-5 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">04 / PHÂN TÍCH TÁC NHÂN HỆ THỐNG (STAKEHOLDERS)</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">5 Nhóm Người dùng &amp; Mối quan tâm Cốt lõi (Mục 2.2)</h2>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">Thiết kế phân quyền &amp; màn hình chuyên biệt</span>
+                </div>
+
+                <!-- 3 Top + 2 Bottom Spacious Stakeholder Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Khách thuê -->
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37] space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl gold-badge flex items-center justify-center text-base"><i class="fa-solid fa-user-check"></i></span>
+                                <div>
+                                    <h3 class="font-display text-xl font-bold text-white">Khách thuê xe</h3>
+                                    <span class="text-xs font-mono text-[#f5d78e]">ROLE 01 • End-User</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300 font-light">
+                            <p><b class="text-white font-medium">Đặc điểm:</b> Khách du lịch 20–45 tuổi, thao tác chủ yếu trên smartphone.</p>
+                            <p><b class="text-[#f5d78e] font-medium">Quan tâm:</b> Tìm xe chuẩn ngày giờ, thủ tục nhanh, giá minh bạch, cọc an toàn.</p>
+                        </div>
+                    </div>
+
+                    <!-- Chủ cửa hàng -->
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37] space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl gold-badge flex items-center justify-center text-base"><i class="fa-solid fa-store"></i></span>
+                                <div>
+                                    <h3 class="font-display text-xl font-bold text-white">Chủ cửa hàng</h3>
+                                    <span class="text-xs font-mono text-[#f5d78e]">ROLE 02 • Partner</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300 font-light">
+                            <p><b class="text-white font-medium">Đặc điểm:</b> Hộ kinh doanh sở hữu 5–50 xe, công nghệ ở mức căn bản.</p>
+                            <p><b class="text-[#f5d78e] font-medium">Quan tâm:</b> Lấp đầy lịch xe, không bị trùng lịch, quản lý doanh thu minh bạch.</p>
+                        </div>
+                    </div>
+
+                    <!-- Nhân viên CH -->
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37] space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl gold-badge flex items-center justify-center text-base"><i class="fa-solid fa-file-signature"></i></span>
+                                <div>
+                                    <h3 class="font-display text-xl font-bold text-white">Nhân viên CH</h3>
+                                    <span class="text-xs font-mono text-[#f5d78e]">ROLE 03 • Operations</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300 font-light">
+                            <p><b class="text-white font-medium">Đặc điểm:</b> Người trực tiếp giao và nhận xe với khách tại điểm hẹn.</p>
+                            <p><b class="text-[#f5d78e] font-medium">Quan tâm:</b> App thao tác nhanh để chụp 6 ảnh, đo ODO, mức xăng &amp; ký số.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Vận hành viên -->
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37] space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl gold-badge flex items-center justify-center text-base"><i class="fa-solid fa-shield-halved"></i></span>
+                            <div>
+                                <h3 class="font-display text-xl font-bold text-white">Vận hành viên MotoGo</h3>
+                                <span class="text-xs font-mono text-[#f5d78e]">ROLE 04 • Internal Admin</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-300 font-light">
+                            <p><b class="text-white font-medium">Đặc điểm:</b> Nhân sự nội bộ phụ trách thẩm định cửa hàng, GPLX &amp; khiếu nại.</p>
+                            <p><b class="text-[#f5d78e] font-medium">Quan tâm:</b> Đủ dữ liệu minh chứng ảnh đối chiếu hai chiều để phân xử công bằng.</p>
+                        </div>
+                    </div>
+
+                    <!-- Quản trị hệ thống -->
+                    <div class="lux-panel rounded-2xl p-5 border-t-2 border-t-[#d4af37] space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl gold-badge flex items-center justify-center text-base"><i class="fa-solid fa-sliders"></i></span>
+                            <div>
+                                <h3 class="font-display text-xl font-bold text-white">Quản trị Hệ thống</h3>
+                                <span class="text-xs font-mono text-[#f5d78e]">ROLE 05 • Super Admin</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-300 font-light">
+                            <p><b class="text-white font-medium">Đặc điểm:</b> Quản lý cấp cao phụ trách cấu hình chính sách toàn sàn &amp; đối soát.</p>
+                            <p><b class="text-[#f5d78e] font-medium">Quan tâm:</b> Linh hoạt cấu hình hoa hồng (12%), thời gian giữ chỗ (30p), SLA (15p).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 05: KIẾN TRÚC 9 MODULE ==================== -->
+        <section class="slide-section" data-slide="4" data-label="05 • Kiến trúc 9 Module Chức năng (FR-01 → FR-40)">
+            <div class="w-full max-w-6xl mx-auto space-y-5 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">05 / KIẾN TRÚC YÊU CẦU CHỨC NĂNG (MỤC 3.1 → 3.9)</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">9 Modules &amp; 40 Yêu cầu Chức năng (FR-01 → FR-40)</h2>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">Bấm vào từng Module bên trái để xem chi tiết FR</span>
+                </div>
+
+                <!-- 2-Column Clean Interactive Split-Screen -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    <!-- Left List: 9 Modules -->
+                    <div id="module-selector-list" class="lg:col-span-5 space-y-2">
+                        <!-- Populated via JS -->
+                    </div>
+
+                    <!-- Right Pane: Active Module Details -->
+                    <div class="lg:col-span-7 lux-panel rounded-3xl p-6 space-y-4 border-l-4 border-l-[#d4af37] min-h-[420px] flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <div>
+                                    <span id="detail-module-sec" class="px-3 py-1 rounded gold-badge font-mono text-xs font-semibold">Mục 3.1</span>
+                                    <h3 id="detail-module-title" class="font-display text-2xl font-bold text-white mt-2">Tài khoản và xác thực</h3>
+                                </div>
+                                <span id="detail-module-range" class="font-mono text-sm text-[#f5d78e] font-bold">FR-01 → FR-05</span>
+                            </div>
+                            <p id="detail-module-summary" class="text-sm text-slate-300 font-light mt-3 leading-relaxed">
+                                Đăng ký/đăng nhập SĐT &amp; OTP, cập nhật CCCD + GPLX A1+, duyệt hồ sơ cửa hàng.
+                            </p>
+                            <div class="mt-4 pt-3 border-t border-white/10">
+                                <span class="text-xs font-mono uppercase text-slate-400 font-semibold block mb-2.5">Danh sách yêu cầu chức năng (FRs):</span>
+                                <div id="detail-module-items" class="space-y-2 text-sm text-slate-200 font-light">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+                            <span>Truy vết trực tiếp Product Backlog</span>
+                            <span class="text-[#f5d78e]">Hỗ trợ điều hướng phím 1–9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 06: LUỒNG ĐẶT XE, GIỮ CHỖ & THANH TOÁN ==================== -->
+        <section class="slide-section" data-slide="5" data-label="06 • Luồng Tìm kiếm, Giữ chỗ & Thanh toán (FR-11 → FR-25)">
+            <div class="w-full max-w-6xl mx-auto space-y-5 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">06 / QUY TRÌNH ĐẶT XE TRỌNG YẾU (MỤC 3.3, 3.4, 3.5)</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">Tìm kiếm Real-Time, Giữ chỗ 30 Phút &amp; Cọc Online</h2>
+                    </div>
+                    <span class="text-xs font-mono text-[#f5d78e] font-medium">Giải pháp chốt đơn &lt; 5 phút &amp; chống Overbooking</span>
+                </div>
+
+                <!-- 3 Clear Sequential Phases -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- Phase 1 -->
+                    <div class="lux-panel rounded-3xl p-6 border-t-4 border-t-[#d4af37] space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded gold-badge font-mono text-xs font-semibold">GIAI ĐOẠN 01</span>
+                            <i class="fa-solid fa-magnifying-glass text-[#e5b869]"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">1. Tìm kiếm &amp; Lọc (FR-11 → 15)</h3>
+                        <div class="space-y-3 text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-11 • Lọc xe trống real-time:</b> Chỉ hiển thị xe trống toàn bộ khoảng thời gian khách chọn.
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-12 &amp; 13 • Bộ lọc đa tiêu chí:</b> Lọc loại xe, hãng, giá, đánh giá; sắp xếp theo giá / khoảng cách.
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-14 &amp; 15 • Minh bạch chi phí:</b> Hiện ≥ 4 ảnh, chính sách hủy và tổng tiền tạm tính chi tiết.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="lux-panel rounded-3xl p-6 border-t-4 border-t-[#f5d78e] space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded gold-badge font-mono text-xs font-semibold">GIAI ĐOẠN 02</span>
+                            <i class="fa-solid fa-stopwatch text-[#f5d78e]"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">2. Giữ chỗ &amp; Xác nhận (FR-16 → 21)</h3>
+                        <div class="space-y-3 text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-3 border-l-2 border-l-[#d4af37]">
+                                <div class="flex justify-between items-center text-[#f5d78e] font-semibold mb-1">
+                                    <span>FR-17 • Khóa giữ chỗ</span>
+                                    <span>30 Phút</span>
+                                </div>
+                                Hệ thống khóa chiếc xe trong 30 phút chờ cọc; hết hạn tự hủy để tránh giam xe.
+                            </div>
+                            <div class="lux-card rounded-xl p-3 border-l-2 border-l-[#d4af37]">
+                                <div class="flex justify-between items-center text-white font-semibold mb-1">
+                                    <span>FR-19 • SLA Cửa hàng</span>
+                                    <span>15 Phút</span>
+                                </div>
+                                Cửa hàng có 15 phút xác nhận/từ chối; quá hạn tự chuyển Vận hành viên xử lý.
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-20 &amp; 21 • Quản lý đơn:</b> Hủy đơn theo BR-04; theo dõi tại "Đơn thuê của tôi".
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="lux-panel rounded-3xl p-6 border-t-4 border-t-[#d4af37] space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded gold-badge font-mono text-xs font-semibold">GIAI ĐOẠN 03</span>
+                            <i class="fa-solid fa-credit-card text-[#e5b869]"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">3. Cọc &amp; Đối soát (FR-22 → 25)</h3>
+                        <div class="space-y-3 text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-22 • Thanh toán cọc 30%:</b> Khách cọc online qua cổng; phần còn lại trả khi nhận xe.
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-23 • Bảo toàn giữ chỗ:</b> Giao dịch lỗi <b class="text-[#f5d78e]">không làm mất thời gian giữ chỗ còn lại</b> để thanh toán lại.
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <b class="text-white font-medium">FR-24 &amp; 25 • Đối soát tuần:</b> Tự động xuất biên nhận điện tử &amp; tính hoa hồng sàn 12%.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 07: BÀN GIAO & KHIẾU NẠI ==================== -->
+        <section class="slide-section" data-slide="6" data-label="07 • Biên bản Giao nhận Điện tử & Khiếu nại (FR-26 → FR-33)">
+            <div class="w-full max-w-6xl mx-auto space-y-6 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">07 / BẰNG CHỨNG SỐ HÓA MINH BẠCH (MỤC 3.6 &amp; 3.7)</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">Biên bản Bàn giao 6 Góc ảnh &amp; Cơ chế Khiếu nại</h2>
+                    </div>
+                    <span class="text-xs font-mono text-[#f5d78e] font-medium">Hạ tỷ lệ tranh chấp trả xe xuống &lt; 3%</span>
+                </div>
+
+                <!-- 4-Step Handover Connected Pipeline -->
+                <div class="lux-panel rounded-3xl p-6">
+                    <span class="text-xs font-mono uppercase tracking-widest text-[#f5d78e] font-semibold block mb-4">Quy trình Bàn giao Xe 4 Bước Số hóa (FR-26 → FR-29)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <div class="text-xs font-mono text-[#f5d78e] font-semibold mb-1">BƯỚC 01 • LÚC GIAO</div>
+                            <div class="text-base font-bold text-white">Chụp ≥ 6 Ảnh + ODO/Xăng</div>
+                            <p class="text-sm text-slate-300 font-light mt-1.5 leading-relaxed">Nhân viên chụp 6 góc chuẩn quy định, ghi số Km và mức xăng hiện tại.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <div class="text-xs font-mono text-[#f5d78e] font-semibold mb-1">BƯỚC 02 • KÍCH HOẠT</div>
+                            <div class="text-base font-bold text-white">Ký Điện tử 2 Bên</div>
+                            <p class="text-sm text-slate-300 font-light mt-1.5 leading-relaxed">Khách ký trực tiếp trên màn hình; đủ 2 bên ký mới chuyển sang <i>Đang thuê</i>.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <div class="text-xs font-mono text-[#f5d78e] font-semibold mb-1">BƯỚC 03 • LÚC TRẢ</div>
+                            <div class="text-base font-bold text-white">Đối chiếu Ảnh Song song</div>
+                            <p class="text-sm text-slate-300 font-light mt-1.5 leading-relaxed">Khi trả xe, màn hình hiện song song ảnh lúc giao &amp; lúc nhận để đối chiếu.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <div class="text-xs font-mono text-[#f5d78e] font-semibold mb-1">BƯỚC 04 • TẤT TOÁN</div>
+                            <div class="text-base font-bold text-white">Minh chứng Phụ phí</div>
+                            <p class="text-sm text-slate-300 font-light mt-1.5 leading-relaxed">Phát sinh hư hại hoặc trả trễ phải có ảnh minh chứng bắt buộc trước khi chốt tiền.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Dispute & Review Cards -->
+                <div class="lux-panel rounded-3xl p-6">
+                    <span class="text-xs font-mono uppercase tracking-widest text-[#f5d78e] font-semibold block mb-4">Cơ chế Đánh giá &amp; Phân xử Khiếu nại (Mục 3.7 • FR-30 → FR-33)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="lux-card rounded-2xl p-4">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">FR-30 • Đánh giá thật</div>
+                            <p class="text-sm text-slate-300 font-light leading-relaxed">Chấm 1–5 sao sau tất toán; chỉ người hoàn tất đơn mới được đánh giá.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-4">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">FR-31 • Phản hồi công khai</div>
+                            <p class="text-sm text-slate-300 font-light leading-relaxed">Cửa hàng được phản hồi công khai 1 lần duy nhất cho mỗi nhận xét.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-4">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">FR-32 • Cửa sổ 48h</div>
+                            <p class="text-sm text-slate-300 font-light leading-relaxed">Mở khiếu nại trong vòng 48 giờ kể từ lúc tất toán kèm mô tả và ảnh.</p>
+                        </div>
+                        <div class="lux-card rounded-2xl p-4">
+                            <div class="font-mono text-xs text-[#f5d78e] font-semibold mb-1">FR-33 • Hồ sơ phân xử</div>
+                            <p class="text-sm text-slate-300 font-light leading-relaxed">Vận hành viên đối chiếu toàn bộ BB giao, BB nhận &amp; lịch sử giao dịch.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 08: STATE MACHINE ==================== -->
+        <section class="slide-section" data-slide="7" data-label="08 • Vòng đời Trạng thái Đơn thuê (Phụ lục 7.1)">
+            <div class="w-full max-w-6xl mx-auto space-y-6 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">08 / MÔ HÌNH TRẠNG THÁI (PHỤ LỤC 7.1)</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">Vòng đời 6 Trạng thái Chính &amp; 3 Nhánh Ngoại lệ</h2>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">Kiểm soát chặt chẽ kho xe và dòng tiền cọc</span>
+                </div>
+
+                <!-- 6 Main Lifecycle States Pipeline -->
+                <div class="lux-panel rounded-3xl p-6">
+                    <span class="text-xs font-mono uppercase tracking-widest text-[#f5d78e] font-semibold block mb-4">Luồng Vận hành Chuẩn (Happy Path)</span>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-left">
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <span class="font-mono text-xs text-[#f5d78e] font-bold">01 • HOLD</span>
+                            <div class="text-base font-bold text-white mt-1">Chờ cọc</div>
+                            <p class="text-xs text-slate-300 font-light mt-1">Khóa giữ xe 30p chờ cọc online.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <span class="font-mono text-xs text-[#f5d78e] font-bold">02 • ĐÃ CỌC</span>
+                            <div class="text-base font-bold text-white mt-1">Chờ duyệt</div>
+                            <p class="text-xs text-slate-300 font-light mt-1">Cửa hàng có 15p xác nhận đơn.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <span class="font-mono text-xs text-[#f5d78e] font-bold">03 • ĐÃ DUYỆT</span>
+                            <div class="text-base font-bold text-white mt-1">Xác nhận</div>
+                            <p class="text-xs text-slate-300 font-light mt-1">Chờ đến giờ hẹn giao xe.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <span class="font-mono text-xs text-[#f5d78e] font-bold">04 • THUÊ</span>
+                            <div class="text-base font-bold text-white mt-1">Đang thuê</div>
+                            <p class="text-xs text-slate-300 font-light mt-1">Hai bên ký điện tử BB 6 ảnh.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <span class="font-mono text-xs text-[#f5d78e] font-bold">05 • TRẢ XE</span>
+                            <div class="text-base font-bold text-white mt-1">Tất toán</div>
+                            <p class="text-xs text-slate-300 font-light mt-1">Ký BB nhận &amp; chốt phụ phí.</p>
+                        </div>
+
+                        <div class="lux-card rounded-2xl p-4 border-t-2 border-t-[#d4af37]">
+                            <span class="font-mono text-xs text-[#f5d78e] font-bold">06 • XONG</span>
+                            <div class="text-base font-bold text-white mt-1">Hoàn tất</div>
+                            <p class="text-xs text-slate-300 font-light mt-1">Hết 48h khiếu nại, mở đối soát.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Exception Branches -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="lux-panel rounded-2xl p-5 border-l-4 border-l-[#d4af37]">
+                        <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs font-semibold">NGOẠI LỆ 01</span>
+                        <h4 class="font-display font-bold text-white text-base mt-2">Trạng thái: Đã hủy</h4>
+                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Hết 30p không cọc (FR-17) hoặc khách hủy theo BR-04 (hoàn 100% / 50% / 0% cọc tùy thời điểm).</p>
+                    </div>
+
+                    <div class="lux-panel rounded-2xl p-5 border-l-4 border-l-[#d4af37]">
+                        <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs font-semibold">NGOẠI LỆ 02</span>
+                        <h4 class="font-display font-bold text-white text-base mt-2">Trạng thái: Từ chối / Chờ VH</h4>
+                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Cửa hàng từ chối trong 15p (hoàn 100% cọc) hoặc quá 15p tự chuyển Vận hành viên can thiệp.</p>
+                    </div>
+
+                    <div class="lux-panel rounded-2xl p-5 border-l-4 border-l-[#d4af37]">
+                        <span class="px-2.5 py-0.5 rounded gold-badge font-mono text-xs font-semibold">NGOẠI LỆ 03</span>
+                        <h4 class="font-display font-bold text-white text-base mt-2">Trạng thái: Đang khiếu nại</h4>
+                        <p class="text-sm text-slate-300 font-light mt-1 leading-relaxed">Kích hoạt khi khách hoặc cửa hàng mở khiếu nại trong 48h; đóng băng đơn để VH viên phân xử.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 09: 10 BUSINESS RULES ==================== -->
+        <section class="slide-section" data-slide="8" data-label="09 • 10 Quy tắc Nghiệp vụ Cốt lõi (BR-01 → BR-10)">
+            <div class="w-full max-w-6xl mx-auto space-y-5 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">09 / QUY TẮC RÀNG BUỘC LOGIC (MỤC 4 • BUSINESS RULES)</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">10 Quy tắc Nghiệp vụ Cốt lõi (BR-01 → BR-10)</h2>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">Kiểm tra tự động ở tầng Backend API</span>
+                </div>
+
+                <!-- 3 Clear Thematic Clusters (Eliminates 10-box visual clutter!) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    
+                    <!-- Cluster 1: Điều kiện thuê & Tiền cọc -->
+                    <div class="lux-panel rounded-3xl p-6 space-y-4 border-t-4 border-t-[#d4af37]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                            <span class="font-display font-bold text-lg text-white">Khách thuê &amp; Đặt cọc</span>
+                            <span class="px-2 py-0.5 rounded gold-badge font-mono text-xs">4 Quy tắc</span>
+                        </div>
+                        <div class="space-y-3 text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-01 • Điều kiện thuê:</span>
+                                <p class="mt-0.5 leading-relaxed">Từ <b class="text-white">18 tuổi</b> &amp; có <b class="text-white">GPLX A1+</b> đã được duyệt mới hoàn tất được đơn.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-02 • Giới hạn thời gian:</span>
+                                <p class="mt-0.5 leading-relaxed">Thời gian thuê tối thiểu là <b class="text-white">4 giờ</b> và tối đa là <b class="text-white">30 ngày</b> / đơn.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-03 • Khung tiền cọc 30%:</span>
+                                <p class="mt-0.5 leading-relaxed">Cọc online bằng <b class="text-white">30% tiền thuê</b>, sàn từ 200.000đ đến trần 1.000.000đ.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-04 • Chính sách hoàn cọc:</span>
+                                <p class="mt-0.5 leading-relaxed">Hủy trước ≥24h: hoàn <b class="text-[#f5d78e]">100%</b>; từ 6h–&lt;24h: hoàn <b class="text-white">50%</b>; &lt;6h: <b class="text-slate-400">0%</b>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cluster 2: Kho xe & Lịch thuê -->
+                    <div class="lux-panel rounded-3xl p-6 space-y-4 border-t-4 border-t-[#d4af37]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                            <span class="font-display font-bold text-lg text-white">Kho xe &amp; Quản lý Lịch</span>
+                            <span class="px-2 py-0.5 rounded gold-badge font-mono text-xs">3 Quy tắc</span>
+                        </div>
+                        <div class="space-y-3 text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-05 • Phí trả trễ xe:</span>
+                                <p class="mt-0.5 leading-relaxed">Trễ dưới 60p: <b class="text-white">miễn phí</b>; từ 60p trở lên tính mỗi giờ bằng <b class="text-[#f5d78e]">20% giá thuê 1 ngày</b>.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-06 • Chống trùng lịch tuyệt đối:</span>
+                                <p class="mt-0.5 leading-relaxed">1 chiếc xe <b class="text-white">không được xuất hiện trong 2 đơn</b> có khoảng thời gian giao nhau.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-07 • Khoảng đệm 60 Phút:</span>
+                                <p class="mt-0.5 leading-relaxed">Hai đơn liên tiếp của 1 xe phải cách nhau <b class="text-white">≥ 60 phút</b> để vệ sinh &amp; kiểm tra kỹ thuật.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cluster 3: Đối tác & Vận hành Sàn -->
+                    <div class="lux-panel rounded-3xl p-6 space-y-4 border-t-4 border-t-[#d4af37]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                            <span class="font-display font-bold text-lg text-white">Vận hành Sàn &amp; Đối tác</span>
+                            <span class="px-2 py-0.5 rounded gold-badge font-mono text-xs">3 Quy tắc</span>
+                        </div>
+                        <div class="space-y-3 text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-08 • Chế tài tỷ lệ hủy &gt; 20%:</span>
+                                <p class="mt-0.5 leading-relaxed">Cửa hàng tự hủy đơn quá <b class="text-white">20%</b> trong 30 ngày sẽ bị <b class="text-red-400">tạm khóa gian hàng</b>.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-09 • Hoa hồng nền tảng 12%:</span>
+                                <p class="mt-0.5 leading-relaxed">Thu <b class="text-[#f5d78e]">12% trên tiền thuê xe</b>; không thu phí trên khoản giao nhận tận nơi.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-3">
+                                <span class="font-mono text-[#f5d78e] font-semibold">BR-10 • Khóa sửa đánh giá 7 ngày:</span>
+                                <p class="mt-0.5 leading-relaxed">Đánh giá và nhận xét của khách <b class="text-white">không được sửa</b> sau 7 ngày kể từ lúc đăng.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 10: PHI CHỨC NĂNG & Q&A ==================== -->
+        <section class="slide-section" data-slide="9" data-label="10 • Phi chức năng, Ngoài phạm vi & Điểm chờ làm rõ (Mục 5, 6 & 7.3)">
+            <div class="w-full max-w-6xl mx-auto space-y-5 my-auto">
+                <div class="border-b border-white/10 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-[#f5d78e] font-semibold">10 / TIÊU CHUẨN KỸ THUẬT &amp; CÂU HỎI MỞ (MỤC 5, 6 &amp; 7.3)</span>
+                        <h2 class="font-display text-3xl font-bold text-white mt-1">Phi Chức năng, Ngoài Phạm vi &amp; 4 Điểm Làm rõ</h2>
+                    </div>
+                    <button onclick="goToSlide(0)" class="px-4 py-1.5 rounded-lg gold-badge font-mono text-xs hover:bg-[#d4af37]/25 transition self-start md:self-auto font-medium">
+                        <i class="fa-solid fa-rotate-left mr-1.5"></i>Về Slide 01
+                    </button>
+                </div>
+
+                <!-- 3 Distinct Pillars -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <!-- Column 1: NFRs (4 cols) -->
+                    <div class="lg:col-span-4 lux-panel rounded-3xl p-5 space-y-3 border-t-2 border-t-[#d4af37]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                            <span class="font-display font-bold text-base text-white">6 Yêu cầu Phi chức năng</span>
+                            <span class="font-mono text-xs text-[#f5d78e]">Mục 5</span>
+                        </div>
+                        <div class="space-y-2 text-xs sm:text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-2.5">
+                                <b class="text-[#f5d78e] font-medium">1. Hiệu năng:</b> Trả về &lt;2s với 5.000 xe; chịu tải 500 CCU dịp cao điểm.
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <b class="text-[#f5d78e] font-medium">2. Khả dụng:</b> Uptime ≥ 99%/tháng; bảo trì báo trước 24h.
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <b class="text-[#f5d78e] font-medium">3. Giao diện:</b> Chuẩn mobile-first; người mới chốt đơn trong ≤ 5 bước.
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <b class="text-[#f5d78e] font-medium">4. Bảo mật:</b> Mã hóa mật khẩu 1 chiều; lưu log kiểm toán ≥ 12 tháng.
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <b class="text-[#f5d78e] font-medium">5. Tương thích:</b> Ổn định trên Chrome, Safari, Edge 2 năm gần nhất.
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <b class="text-[#f5d78e] font-medium">6. Khả năng mở rộng:</b> Dễ dàng cắm thêm thành phố mới vào hệ thống.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Out of Scope (3.5 cols) -->
+                    <div class="lg:col-span-4 lux-panel rounded-3xl p-5 space-y-3 border-t-2 border-t-[#d4af37]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                            <span class="font-display font-bold text-base text-white">Ngoài phạm vi (MVP)</span>
+                            <span class="font-mono text-xs text-slate-400">Mục 6</span>
+                        </div>
+                        <div class="space-y-2 text-xs sm:text-sm text-slate-300 font-light">
+                            <div class="lux-card rounded-xl p-2.5 flex items-center gap-2">
+                                <i class="fa-solid fa-ban text-[#d4af37] text-xs"></i>
+                                <span>1. App native di động iOS &amp; Android.</span>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5 flex items-center gap-2">
+                                <i class="fa-solid fa-ban text-[#d4af37] text-xs"></i>
+                                <span>2. Thuê ô tô, xe đạp hoặc phương tiện khác.</span>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5 flex items-center gap-2">
+                                <i class="fa-solid fa-ban text-[#d4af37] text-xs"></i>
+                                <span>3. Tích điểm, khách thân thiết, voucher giảm giá.</span>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5 flex items-center gap-2">
+                                <i class="fa-solid fa-ban text-[#d4af37] text-xs"></i>
+                                <span>4. Tích hợp gói bảo hiểm du lịch bên thứ 3.</span>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5 flex items-center gap-2">
+                                <i class="fa-solid fa-ban text-[#d4af37] text-xs"></i>
+                                <span>5. Định vị xe GPS thời gian thực trên bản đồ.</span>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5 flex items-center gap-2">
+                                <i class="fa-solid fa-ban text-[#d4af37] text-xs"></i>
+                                <span>6. Đa ngôn ngữ và thanh toán ngoại tệ.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Open Questions & Assumptions (4.5 cols) -->
+                    <div class="lg:col-span-4 lux-panel rounded-3xl p-5 space-y-3 border-t-2 border-t-[#d4af37]">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                            <span class="font-display font-bold text-base text-white">4 Giả định Làm rõ</span>
+                            <span class="font-mono text-xs text-[#f5d78e]">Mục 7.3</span>
+                        </div>
+                        <div class="space-y-2 text-xs sm:text-sm">
+                            <div class="lux-card rounded-xl p-2.5">
+                                <div class="font-mono text-[#f5d78e] font-semibold">Q1 • Thuê nhiều xe 1 đơn?</div>
+                                <p class="text-slate-300 font-light mt-0.5"><b class="text-white">Nhóm 1:</b> 1 đơn = 1 xe để độc lập biên bản 6 ảnh.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <div class="font-mono text-[#f5d78e] font-semibold">Q2 • Cửa hàng tự đặt mức cọc?</div>
+                                <p class="text-slate-300 font-light mt-0.5"><b class="text-white">Nhóm 1:</b> Cố định 30% toàn sàn để đồng nhất cổng cọc.</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <div class="font-mono text-[#f5d78e] font-semibold">Q3 • Khách không đến (No-show)?</div>
+                                <p class="text-slate-300 font-light mt-0.5"><b class="text-white">Nhóm 1:</b> Quá 2h tự hủy đơn, không hoàn cọc (BR-04).</p>
+                            </div>
+                            <div class="lux-card rounded-xl p-2.5">
+                                <div class="font-mono text-[#f5d78e] font-semibold">Q4 • Chat trực tiếp trong app?</div>
+                                <p class="text-slate-300 font-light mt-0.5"><b class="text-white">Nhóm 1:</b> Dùng ghi chú đơn &amp; cấp SĐT sau khi cọc.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================================= -->
+    <!-- JAVASCRIPT: SRS DATA & SLIDE NAVIGATION                                 -->
+    <!-- ======================================================================= -->
+    <script>
+        const srsModules = [
+            {
+                sec: "Mục 3.1",
+                range: "FR-01 → FR-05",
+                title: "Tài khoản và xác thực",
+                summary: "Đăng ký/đăng nhập SĐT & OTP, hồ sơ CCCD + GPLX A1+, duyệt gian hàng cửa hàng.",
+                items: [
+                    "<b>FR-01:</b> Đăng ký bằng SĐT, xác thực OTP tin nhắn (1 SĐT / 1 tài khoản).",
+                    "<b>FR-02:</b> Đăng nhập bằng SĐT & mật khẩu; quên mật khẩu qua OTP.",
+                    "<b>FR-03:</b> Cập nhật Họ tên, ngày sinh, địa chỉ, ảnh CCCD & ảnh GPLX hạng A1 trở lên.",
+                    "<b>FR-04:</b> Chưa duyệt GPLX vẫn xem & tìm kiếm được xe, nhưng không hoàn tất được đơn.",
+                    "<b>FR-05:</b> Cửa hàng đăng ký tên, địa chỉ, GPKD, STK nhận tiền; hiển thị sau khi VH viên duyệt."
+                ]
+            },
+            {
+                sec: "Mục 3.2",
+                range: "FR-06 → FR-10",
+                title: "Quản lý kho xe",
+                summary: "Khai báo xe (≥ 4 ảnh), cấu hình giá ngày thường/cuối tuần/lễ, lịch tuần & điểm giao xe.",
+                items: [
+                    "<b>FR-06:</b> Khai báo biển số, hãng, dòng, năm SX, loại xe, dung tích, tình trạng & ≥ 4 ảnh thực tế.",
+                    "<b>FR-07:</b> Thiết lập giá thuê theo ngày; cho phép cấu hình giá riêng cuối tuần & dịp lễ.",
+                    "<b>FR-08:</b> Đánh dấu xe tạm ngưng cho thuê (bảo dưỡng, hư hỏng) kèm thời gian; ẩn khỏi tìm kiếm.",
+                    "<b>FR-09:</b> Xem lịch thuê toàn bộ kho xe dạng lịch tuần, biết rõ khung giờ đặt của từng xe.",
+                    "<b>FR-10:</b> Cấu hình điểm giao nhận (tại cửa hàng, giao tận nơi trong bán kính) kèm phí tương ứng."
+                ]
+            },
+            {
+                sec: "Mục 3.3",
+                range: "FR-11 → FR-15",
+                title: "Tìm kiếm và xem chi tiết",
+                summary: "Tìm xe trống theo thời gian & thành phố, lọc/sắp xếp đa tiêu chí, ước tính tổng chi phí.",
+                items: [
+                    "<b>FR-11:</b> Tìm xe theo Thành phố, ngày giờ nhận & trả; chỉ hiện xe trống toàn bộ khoảng thời gian đó.",
+                    "<b>FR-12:</b> Lọc theo loại xe, khoảng giá, hãng xe, hình thức giao nhận & điểm đánh giá cửa hàng.",
+                    "<b>FR-13:</b> Sắp xếp theo giá tăng dần, giá giảm dần, điểm đánh giá hoặc khoảng cách hiện tại.",
+                    "<b>FR-14:</b> Chi tiết xe: ảnh, thông số, giá, tổng chi phí dự kiến, chính sách hủy, thông tin CH & đánh giá.",
+                    "<b>FR-15:</b> Khách thuê lưu xe vào danh sách yêu thích để xem lại sau khi đã đăng nhập."
+                ]
+            },
+            {
+                sec: "Mục 3.4",
+                range: "FR-16 → FR-21",
+                title: "Đặt xe và giữ chỗ",
+                summary: "Tạo đơn thuê, khóa giữ chỗ 30 phút chờ cọc, SLA cửa hàng 15 phút, hủy đơn theo BR-04.",
+                items: [
+                    "<b>FR-16:</b> Tạo đơn từ trang chi tiết xe, chọn hình thức giao nhận và nhập ghi chú cho cửa hàng.",
+                    "<b>FR-17:</b> Giữ chỗ xe trong 30 phút để khách hoàn tất thanh toán cọc; quá hạn tự hủy & mở lại xe.",
+                    "<b>FR-18:</b> Hiển thị bảng chi phí: tiền thuê theo ngày, phí giao nhận, tiền cọc & tổng tiền trả khi nhận xe.",
+                    "<b>FR-19:</b> Cửa hàng có 15 phút xác nhận/từ chối kèm lý do; quá hạn tự chuyển sang chờ VH viên xử lý.",
+                    "<b>FR-20 & FR-21:</b> Hủy đơn trước giờ nhận hoàn tiền theo BR-04; theo dõi trạng thái tại 'Đơn thuê của tôi'."
+                ]
+            },
+            {
+                sec: "Mục 3.5",
+                range: "FR-22 → FR-25",
+                title: "Thanh toán và đối soát",
+                summary: "Thanh toán cọc online, bảo toàn giữ chỗ khi lỗi giao dịch, biên nhận điện tử & đối soát tuần.",
+                items: [
+                    "<b>FR-22:</b> Thanh toán tiền cọc trực tuyến qua cổng tích hợp; phần còn lại trả trực tiếp khi nhận xe.",
+                    "<b>FR-23:</b> Ghi nhận kết quả cổng thanh toán; giao dịch thất bại không làm mất thời gian giữ chỗ còn lại.",
+                    "<b>FR-24:</b> Phát hành biên nhận điện tử cho mỗi giao dịch thành công và gửi vào mục đơn thuê.",
+                    "<b>FR-25:</b> Tính hoa hồng nền tảng (12%) trên mỗi đơn hoàn tất và tổng hợp bảng đối soát tuần."
+                ]
+            },
+            {
+                sec: "Mục 3.6",
+                range: "FR-26 → FR-29",
+                title: "Giao nhận xe điện tử",
+                summary: "Biên bản bàn giao ≥ 6 ảnh + ODO + xăng, ký điện tử 2 bên, đối chiếu ảnh song song khi trả.",
+                items: [
+                    "<b>FR-26:</b> Lúc giao xe: chụp tối thiểu 6 ảnh theo góc quy định, ghi số ki-lô-mét (ODO) và mức xăng.",
+                    "<b>FR-27:</b> Khách xác nhận biên bản bằng ký điện tử trên màn hình; cả 2 bên xác nhận mới sang Đang thuê.",
+                    "<b>FR-28:</b> Lúc trả xe: lập biên bản nhận lại; hiển thị song song ảnh lúc giao và lúc nhận để đối chiếu.",
+                    "<b>FR-29:</b> Phát sinh hư hỏng/trả trễ: nhân viên ghi nhận phí kèm mô tả và ảnh minh chứng trước tất toán."
+                ]
+            },
+            {
+                sec: "Mục 3.7",
+                range: "FR-30 → FR-33",
+                title: "Đánh giá và khiếu nại",
+                summary: "Chấm điểm 1–5 sao sau tất toán, cửa hàng phản hồi 1 lần, mở khiếu nại trong vòng 48 giờ.",
+                items: [
+                    "<b>FR-30:</b> Sau tất toán, khách chấm 1–5 sao và viết nhận xét (chỉ khách hoàn tất đơn mới được đánh giá).",
+                    "<b>FR-31:</b> Cửa hàng được phản hồi công khai một lần cho mỗi đánh giá của khách thuê.",
+                    "<b>FR-32:</b> Khách hoặc cửa hàng mở khiếu nại trong vòng 48 giờ từ khi tất toán kèm mô tả & ảnh minh chứng.",
+                    "<b>FR-33:</b> Vận hành viên xem toàn bộ hồ sơ đơn (BB giao, BB nhận, thanh toán) để xử lý và kết luận."
+                ]
+            },
+            {
+                sec: "Mục 3.8",
+                range: "FR-34 → FR-38",
+                title: "Kênh cửa hàng và quản trị",
+                summary: "Dashboard doanh thu & tỷ lệ lấp đầy, xuất báo cáo bảng tính, duyệt hồ sơ & cấu hình tham số.",
+                items: [
+                    "<b>FR-34:</b> Cửa hàng xem tổng quan: số đơn theo trạng thái, doanh thu tuần/tháng, tỷ lệ lấp đầy kho xe.",
+                    "<b>FR-35:</b> Cửa hàng xuất báo cáo doanh thu theo khoảng thời gian tự chọn ra tệp bảng tính.",
+                    "<b>FR-36:</b> Vận hành viên duyệt hoặc từ chối hồ sơ cửa hàng và GPLX của khách (kèm lý do từ chối).",
+                    "<b>FR-37 & FR-38:</b> Admin cấu hình hoa hồng, giữ chỗ, chính sách hủy, phí trễ; xem báo cáo toàn sàn theo TP."
+                ]
+            },
+            {
+                sec: "Mục 3.9",
+                range: "FR-39 → FR-40",
+                title: "Hệ thống Thông báo",
+                summary: "Thông báo trạng thái đơn tự động và nhắc lịch nhận/trả xe trước 2 giờ cho khách & cửa hàng.",
+                items: [
+                    "<b>FR-39 (Khách thuê):</b> Gửi thông báo khi đơn được xác nhận, bị từ chối, trước giờ nhận 2h & trước giờ trả 2h.",
+                    "<b>FR-40 (Cửa hàng):</b> Gửi thông báo khi có đơn mới, khách hủy đơn, có đánh giá mới hoặc có khiếu nại liên quan."
+                ]
+            }
+        ];
+
+        const slideMeta = [
+            { num: "01", title: "Trang bìa Dự án MotoGo", sub: "Mục đích & Phạm vi MVP (1.1 - 1.2)" },
+            { num: "02", title: "Bối cảnh & Nỗi đau Thị trường", sub: "Số liệu khảo sát thực tế (2.1 & 7.2)" },
+            { num: "03", title: "Mục tiêu Kinh doanh & Ràng buộc", sub: "3 KPI cốt lõi & 5 Giả định (1.2 & 2.3)" },
+            { num: "04", title: "5 Nhóm Người dùng Hệ sinh thái", sub: "Mô tả & Mối quan tâm chính (2.2)" },
+            { num: "05", title: "Kiến trúc 9 Module Chức năng", sub: "40 Yêu cầu FR-01 → FR-40 (Mục 3)" },
+            { num: "06", title: "Luồng Đặt xe, Giữ chỗ & Đặt cọc", sub: "Giữ chỗ 30p, SLA 15p & Cọc (3.3 - 3.5)" },
+            { num: "07", title: "Biên bản Giao nhận & Khiếu nại", sub: "6 Ảnh chuẩn, Ký số & Khiếu nại 48h (3.6 - 3.7)" },
+            { num: "08", title: "Vòng đời Trạng thái Đơn thuê", sub: "State Machine 6 trạng thái (Phụ lục 7.1)" },
+            { num: "09", title: "10 Quy tắc Nghiệp vụ Cốt lõi", sub: "Toàn bộ BR-01 → BR-10 (Mục 4)" },
+            { num: "10", title: "Phi chức năng, Ngoài phạm vi & Q&A", sub: "NFRs, Out of Scope & Câu hỏi mở (5, 6, 7.3)" }
+        ];
+
+        let currentSlide = 0;
+        const totalSlides = 10;
+        let wheelCooldown = false;
+
+        function initPresentationUI() {
+            // Render 9 Module Selector List on Slide 05
+            const selectorList = document.getElementById('module-selector-list');
+            if (selectorList) {
+                selectorList.innerHTML = '';
+                srsModules.forEach((mod, idx) => {
+                    const btn = document.createElement('button');
+                    btn.id = `mod-tab-${idx}`;
+                    btn.className = `w-full lux-card text-left rounded-xl p-3 flex items-center justify-between transition ${idx === 0 ? 'lux-card-active' : ''}`;
+                    btn.onclick = () => selectModuleDetail(idx);
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-[#f5d78e]' : 'bg-white/20'}"></span>
+                            <span class="font-mono text-xs text-[#f5d78e] font-semibold">${mod.sec}</span>
+                            <span class="text-sm font-semibold text-white">${mod.title}</span>
+                        </div>
+                        <span class="font-mono text-xs text-slate-400">${mod.range}</span>
+                    `;
+                    selectorList.appendChild(btn);
+                });
+                selectModuleDetail(0);
+            }
+
+            // Render Overview Modal Grid
+            const ovGrid = document.getElementById('overview-grid');
+            if (ovGrid) {
+                ovGrid.innerHTML = '';
+                slideMeta.forEach((meta, idx) => {
+                    const item = document.createElement('button');
+                    item.id = `ov-card-${idx}`;
+                    item.className = `lux-card text-left rounded-2xl p-4 sm:p-5 flex flex-col justify-between ${idx === 0 ? 'lux-card-active' : ''}`;
+                    item.onclick = () => {
+                        goToSlide(idx);
+                        toggleOverviewModal(false);
+                    };
+                    item.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs sm:text-sm text-[#f5d78e] font-semibold">SLIDE ${meta.num}</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500"></i>
+                        </div>
+                        <div class="font-display font-bold text-base text-white mt-2">${meta.title}</div>
+                        <div class="text-xs sm:text-sm text-slate-300 font-light mt-1.5">${meta.sub}</div>
+                    `;
+                    ovGrid.appendChild(item);
+                });
+            }
+        }
+
+        function selectModuleDetail(idx) {
+            srsModules.forEach((_, i) => {
+                const tab = document.getElementById(`mod-tab-${i}`);
+                if (tab) {
+                    tab.classList.toggle('lux-card-active', i === idx);
+                    const dot = tab.querySelector('span');
+                    if (dot) dot.className = `w-1.5 h-1.5 rounded-full ${i === idx ? 'bg-[#f5d78e]' : 'bg-white/20'}`;
+                }
+            });
+
+            const mod = srsModules[idx];
+            document.getElementById('detail-module-sec').textContent = mod.sec;
+            document.getElementById('detail-module-title').textContent = mod.title;
+            document.getElementById('detail-module-range').textContent = mod.range;
+            document.getElementById('detail-module-summary').textContent = mod.summary;
+
+            const itemsEl = document.getElementById('detail-module-items');
+            itemsEl.innerHTML = mod.items.map(it => `
+                <div class="lux-card rounded-xl px-3.5 py-2 leading-relaxed font-light">${it}</div>
+            `).join('');
+        }
+
+        function goToSlide(idx) {
+            if (idx < 0) idx = 0;
+            if (idx >= totalSlides) idx = totalSlides - 1;
+            currentSlide = idx;
+
+            const sections = document.querySelectorAll('.slide-section');
+            sections.forEach((sec, i) => {
+                sec.classList.toggle('active', i === currentSlide);
+            });
+
+            // Update Header & Top Progress Bar
+            const pct = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('top-progress-bar').style.width = `${pct}%`;
+            document.getElementById('header-section-label').textContent = sections[currentSlide].getAttribute('data-label');
+            document.getElementById('header-slide-counter').textContent = `${String(currentSlide + 1).padStart(2, '0')} / ${totalSlides}`;
+
+            // Update Overview Active Card
+            slideMeta.forEach((_, i) => {
+                const ov = document.getElementById(`ov-card-${i}`);
+                if (ov) ov.classList.toggle('lux-card-active', i === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) goToSlide(currentSlide - 1);
+        }
+
+        function toggleOverviewModal(forceState) {
+            const modal = document.getElementById('overview-modal');
+            const show = typeof forceState === 'boolean' ? forceState : modal.classList.contains('hidden');
+            modal.classList.toggle('hidden', !show);
+            modal.classList.toggle('flex', show);
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        // Keyboard & Wheel Navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                toggleOverviewModal(false);
+                return;
+            }
+            if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'o' || e.key === 'O') {
+                toggleOverviewModal();
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullScreen();
+            } else if (e.key >= '1' && e.key <= '9') {
+                goToSlide(parseInt(e.key, 10) - 1);
+            } else if (e.key === '0') {
+                goToSlide(9);
+            }
+        });
+
+        window.addEventListener('wheel', (e) => {
+            const modal = document.getElementById('overview-modal');
+            if (!modal.classList.contains('hidden')) return;
+            if (wheelCooldown) return;
+            if (Math.abs(e.deltaY) > 42) {
+                wheelCooldown = true;
+                if (e.deltaY > 0) nextSlide();
+                else prevSlide();
+                setTimeout(() => { wheelCooldown = false; }, 650);
+            }
+        }, { passive: true });
+
+        window.onload = function () {
+            initPresentationUI();
+        };
+    </script>
+</body>
+</html>
